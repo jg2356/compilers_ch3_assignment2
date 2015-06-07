@@ -78,9 +78,8 @@ public class CalculatorVisitor extends RSSBaseVisitor<Double> {
 		case "/":
 		case "-":
 		{
-			if (ctx.expr().isEmpty()) {
-				throw new RuntimeException("illegal expression: (" + op + ")");
-			}
+			if (ctx.expr().isEmpty())
+				throw new RuntimeException("illegal: (" + op + ")");
 
 			Double result = null;
 			for (RSSParser.ExprContext expr : ctx.expr()) {
