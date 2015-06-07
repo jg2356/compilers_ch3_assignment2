@@ -1,0 +1,49 @@
+Author: Jose Gomez
+Nova Southeastern University
+June 6th 2015
+CISC 630
+Assignment 2
+
+Written Assignment 2
+1. (3.3.2) Describe the languages denoted by the following regular expressions:
+a) a(a|b)*a
+The language is a character sequence of 'a' and 'b'  which always starts and ends with 'a'.
+
+b) ((epsilon|a)b*)*
+The language is a character sequence of 'a' and 'b'.
+
+c) (a|b)*a(a|b)(a|b)
+The language is a character sequence of 'a's and 'b's where the 3rd to last character is always an 'a'.
+
+d) a*ba*ba*ba*
+The language is a character sequence of 'a's and 'b's containing any number of 'a's but exactly 3 'b' characters.
+
+e) (aa|bb)*((ab|ba)(aa|bb)*(ab|ba)(aa|bb)*)* 
+The language is a character sequence of 'a's and 'b's always containing an even number of 'a's and 'b's, but that may contain a different number of 'a's and 'b's.
+
+2. Write regular expressions for the following languages over the alphabet {a,b}:
+a) The set of strings with at least three 'a's.
+(a|b)*a(a|b)*a(a|b)*a(a|b)*
+
+b) The set of strings with three consecutive 'a's.
+(a|b)*aaa(a|b)* 
+
+c) The set of strings with an odd number of 'a's.
+(aa|b)*a(aa|b)*
+
+d) The set of strings that do not contain the substring 'bba'.
+(a|ba)*b*
+
+3 & 4. NFA/DFAs
+a) (a|b)*a(a|b)*a(a|b)*a(a|b)*
+
+
+b) (a|b)*aaa(a|b)* 
+
+
+c) (aa|b)*a(aa|b)*
+
+
+d) (a|ba)*b*
+
+
