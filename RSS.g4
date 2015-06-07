@@ -3,8 +3,8 @@ grammar RSS;
 prog: (expr NEWLINE)+
     ;
 expr: DOUBLE # double
-    | '(' RATOR expr+ ')' # operation
-    | '(' 'def ' ID expr ')' # defvar
+    | '(' RATOR expr* ')' # operation
+    | '(' 'def' ID expr ')' # defvar
     | ID # refvar
     ;
 

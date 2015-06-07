@@ -1,20 +1,17 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import org.antlr.v4.runtime.Parser;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeVisitor;
-
 public class CalculatorVisitor extends RSSBaseVisitor<Double> {
 	private Map<String, Double> variables;
 	
 	public CalculatorVisitor()
 	{
 		variables = new HashMap<String, Double>();
+		variables.put("^", 1.0);
+		variables.put("*", 1.0);
+		variables.put("/", 1.0);
+		variables.put("+", 0.0);
+		variables.put("-", 0.0);
 	}
 	
 	@Override public Double visitDefvar(RSSParser.DefvarContext ctx) {
@@ -53,69 +50,66 @@ public class CalculatorVisitor extends RSSBaseVisitor<Double> {
 
 	@Override public Double visitOperation(RSSParser.OperationContext ctx) {
 		String op = ctx.RATOR().getText();
-		Double result = 0.0;
-
 		switch(op) {
-		case "^":
-		{
-			result = 1.0;
-			for (RSSParser.ExprContext expr : ctx.expr()) {
-				result = Math.pow(result, visit(expr));				
-			}
-			break;
-		}
-		case "*":
-		{
-			result = 1.0;
-			for (RSSParser.ExprContext expr : ctx.expr()) {
-				result = result * visit(expr);				
-			}
-			break;
-		}
-		case "/":
-		{
-			result = null;
-			for (RSSParser.ExprContext expr : ctx.expr()) {
-				if (ctx.expr().size() == 1) {
-					result = 1.0 / visit(expr);
-				}
-				else if (result == null)
-				{
-					result = visit(expr);
-				}
-				else {
-					result = result / visit(expr);	
-				}
-			}
-			break;
-		}
 		case "+":
 		{
-			result = 0.0;
+			Double result = variables.get(op);
 			for (RSSParser.ExprContext expr : ctx.expr()) {
 				result = result + visit(expr);				
 			}
-			break;
+			return result;
 		}
+		case "^":
+		case "*":
+		{
+			Double result = variables.get(op);
+			for (RSSParser.ExprContext expr : ctx.expr()) {
+				switch(op) {
+				case "^":
+					result = Math.pow(result, visit(expr));
+					break;
+				case "*":
+					result = result * visit(expr);
+					break;
+				}
+			}
+			return result;
+		}
+		case "/":
 		case "-":
 		{
-			result = null;
+			if (ctx.expr().isEmpty()) {
+				throw new RuntimeException("illegal expression: (" + op + ")");
+			}
+
+			Double result = null;
 			for (RSSParser.ExprContext expr : ctx.expr()) {
-				if (ctx.expr().size() == 1) {
-					result = 0.0 - visit(expr);
-				}
-				else if (result == null)
+				if (result == null)
 				{
-					result = visit(expr);
+					if (ctx.expr().iterator().hasNext()) {
+						result = visit(expr);
+						continue;
+					}
+					else {
+						result = variables.get(op);
+					}
 				}
 				else {
-					result = result - visit(expr);	
-				}			
+					switch(op)
+					{
+					case "/":
+						result = result / visit(expr);
+						break;
+					case "-":
+						result = result - visit(expr);
+						break;
+					}
+				}	
 			}
-			break;
+			return result;
 		}
+		default:
+			throw new RuntimeException("illegal operator: " + op);
 		}
-		
-		return result;
 	}
 }
